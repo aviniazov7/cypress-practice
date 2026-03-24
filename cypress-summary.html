@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cypress Cheat Sheet — סיכום מקצועי</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Rubik:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-primary: #0a0e17;
+    --bg-secondary: #111827;
+    --bg-card: #151d2e;
+    --bg-code: #0d1320;
+    --accent: #38bdf8;
+    --accent-dim: #1e6e9e;
+    --accent-glow: rgba(56, 189, 248, 0.08);
+    --text-primary: #e2e8f0;
+    --text-secondary: #8b9dc3;
+    --text-dim: #4a5a7a;
+    --border: #1e293b;
+    --border-accent: #1c3a5a;
+    --green: #34d399;
+    --red: #f87171;
+    --yellow: #fbbf24;
+    --orange: #fb923c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Rubik', sans-serif;
+    line-height: 1.75;
+    min-height: 100vh;
+  }
+
+  /* --- HEADER --- */
+  .header {
+    position: relative;
+    padding: 60px 40px 50px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 600px 300px at 50% 0%, rgba(56,189,248,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 400px 400px at 80% 100%, rgba(56,189,248,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .header h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+  }
+  .header .subtitle {
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+    font-weight: 400;
+  }
+  .header .badge {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 5px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border-accent);
+    background: var(--accent-glow);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+  }
+
+  /* --- LAYOUT --- */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* --- SECTION --- */
+  .section {
+    margin-bottom: 48px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #818cf8);
+    color: #0a0e17;
+    font-weight: 700;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+
+  /* --- DESCRIPTION TEXT --- */
+  .desc {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+    line-height: 1.8;
+  }
+
+  /* --- TABLE --- */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+  thead th {
+    background: var(--bg-secondary);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+  tbody td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--accent-glow); }
+  td code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    background: var(--bg-code);
+    color: var(--accent);
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    direction: ltr;
+    display: inline-block;
+  }
+  td.explain { color: var(--text-secondary); }
+
+  /* --- CODE BLOCK --- */
+  .code-block {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    overflow-x: auto;
+    direction: ltr;
+    text-align: left;
+  }
+  .code-block pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.9;
+    color: var(--text-primary);
+    white-space: pre;
+  }
+  .code-block .comment { color: var(--text-dim); }
+  .code-block .keyword { color: #c084fc; }
+  .code-block .string { color: var(--green); }
+  .code-block .func { color: var(--accent); }
+  .code-block .tag { color: var(--yellow); }
+
+  /* --- CARD GRID --- */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--accent-dim); }
+  .card h4 {
+    color: var(--accent);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .card p {
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+  .card code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: var(--bg-code);
+    color: var(--accent);
+    padding: 1px 6px;
+    border-radius: 3px;
+    direction: ltr;
+    display: inline-block;
+  }
+
+  /* --- RULE CARD --- */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 14px;
+  }
+  .rule {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .rule-num {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--accent-glow);
+    border: 1px solid var(--border-accent);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+  }
+  .rule-text h4 {
+    color: var(--text-primary);
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .rule-text p {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  /* --- FOLDER TREE --- */
+  .tree {
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+    direction: ltr;
+    text-align: left;
+    overflow-x: auto;
+  }
+  .tree .folder { color: var(--accent); }
+  .tree .file { color: var(--text-secondary); }
+  .tree .arrow { color: var(--text-dim); }
+  .tree .note { color: var(--text-dim); font-style: italic; }
+
+  /* --- FLOW --- */
+  .flow {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    direction: ltr;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 2.2;
+  }
+  .flow .step {
+    display: inline-block;
+    background: var(--bg-code);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 14px;
+    margin: 4px;
+    color: var(--text-primary);
+  }
+  .flow .arrow-flow { color: var(--accent); margin: 0 4px; }
+  .flow .pass { color: var(--green); font-weight: 600; }
+  .flow .fail { color: var(--red); font-weight: 600; }
+
+  /* --- HIGHLIGHT BOX --- */
+  .highlight {
+    background: var(--accent-glow);
+    border: 1px solid var(--border-accent);
+    border-right: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 14px 20px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+  .highlight strong { color: var(--accent); font-weight: 600; }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 640px) {
+    .header { padding: 40px 20px 36px; }
+    .header h1 { font-size: 2rem; }
+    .container { padding: 28px 14px 60px; }
+    .card-grid, .rules-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<div class="header">
+  <h1>Cypress Cheat Sheet</h1>
+  <div class="subtitle">סיכום מקצועי — כל מה שצריך לדעת על בדיקות אוטומטיות</div>
+  <div class="badge">v13+ &nbsp;·&nbsp; E2E &amp; Component Testing</div>
+</div>
+
+<div class="container">
+
+<!-- ===== 1. WHAT IS CYPRESS ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">1</div>
+    <h2>מהו Cypress?</h2>
+  </div>
+  <div class="desc">
+    <strong>Cypress</strong> הוא כלי בדיקות אוטומטיות לאפליקציות ווב. הוא פותח דפדפן אמיתי, מבצע פעולות (הקלדה, לחיצה, ניווט) ומוודא שהכל עובד כמצופה — במקום שתעשה את זה ידנית, שוב ושוב.
+  </div>
+  <div class="highlight">
+    <strong>אנלוגיה:</strong> Cypress = רובוט QA שיושב מול הדפדפן ומבצע תסריטי בדיקה 24/7 — מהר יותר ובלי טעויות אנוש.
+  </div>
+</div>
+
+<!-- ===== 2. TEST STRUCTURE ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">2</div>
+    <h2>מבנה בדיקה</h2>
+  </div>
+  <div class="desc">כל בדיקה בנויה משלוש שכבות: קבוצה → הכנה → בדיקה בודדת.</div>
+  <div class="code-block"><pre><span class="func">describe</span>(<span class="string">'Login Page Tests'</span>, () => {
+
+    <span class="func">beforeEach</span>(() => {                  <span class="comment">// רץ לפני כל it</span>
+        <span class="tag">cy</span>.<span class="func">visit</span>(<span class="string">'/login'</span>);
+    });
+
+    <span class="func">it</span>(<span class="string">'should login successfully'</span>, () => {
+        <span class="tag">cy</span>.<span class="func">get</span>(<span class="string">'#username'</span>).<span class="func">type</span>(<span class="string">'admin'</span>);    <span class="comment">// 1. מצא + פעולה</span>
+        <span class="tag">cy</span>.<span class="func">get</span>(<span class="string">'#password'</span>).<span class="func">type</span>(<span class="string">'pass123'</span>);
+        <span class="tag">cy</span>.<span class="func">get</span>(<span class="string">'button[type="submit"]'</span>).<span class="func">click</span>();
+        <span class="tag">cy</span>.<span class="func">url</span>().<span class="func">should</span>(<span class="string">'include'</span>, <span class="string">'/dashboard'</span>); <span class="comment">// 2. בדיקה</span>
+    });
+});</pre></div>
+</div>
+
+<!-- ===== 3. NAVIGATION ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">3</div>
+    <h2>ניווט</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>פקודה</th><th>תיאור</th></tr></thead>
+      <tbody>
+        <tr><td><code>cy.visit('/login')</code></td><td class="explain">פתיחת דף (יחסית ל-baseUrl)</td></tr>
+        <tr><td><code>cy.url()</code></td><td class="explain">קבלת ה-URL הנוכחי לבדיקה</td></tr>
+        <tr><td><code>cy.go('back')</code></td><td class="explain">חזרה לדף הקודם בהיסטוריה</td></tr>
+        <tr><td><code>cy.reload()</code></td><td class="explain">רענון הדף הנוכחי</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 4. SELECTORS ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">4</div>
+    <h2>סלקטורים — <code>cy.get()</code></h2>
+  </div>
+  <div class="desc">בחירת אלמנטים מה-DOM. התחביר זהה ל-CSS Selectors.</div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>סלקטור</th><th>דוגמה</th><th>הסבר</th></tr></thead>
+      <tbody>
+        <tr><td><code>#id</code></td><td><code>cy.get('#username')</code></td><td class="explain">לפי ID</td></tr>
+        <tr><td><code>.class</code></td><td><code>cy.get('.flash.success')</code></td><td class="explain">לפי Class (אחד או יותר)</td></tr>
+        <tr><td><code>tag</code></td><td><code>cy.get('h2')</code></td><td class="explain">לפי סוג אלמנט HTML</td></tr>
+        <tr><td><code>[attr]</code></td><td><code>cy.get('a[href="/logout"]')</code></td><td class="explain">לפי Attribute</td></tr>
+        <tr><td><code>tag[attr]</code></td><td><code>cy.get('button[type="submit"]')</code></td><td class="explain">שילוב tag + attribute</td></tr>
+        <tr><td><code>[data-cy]</code></td><td><code>cy.get('[data-cy="submit"]')</code></td><td class="explain">⭐ Best Practice — יציב ולא נשבר</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="highlight">
+    <strong>כלל זהב:</strong> תמיד העדיפו <code>data-cy</code> — הוא לא תלוי בעיצוב, לא ב-class ולא ב-text. האלמנט יכול להשתנות ויזואלית והבדיקה תמשיך לעבוד.
+  </div>
+</div>
+
+<!-- ===== 5. ACTIONS ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">5</div>
+    <h2>פעולות על אלמנטים</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>פקודה</th><th>תיאור</th></tr></thead>
+      <tbody>
+        <tr><td><code>.type('text')</code></td><td class="explain">הקלדת טקסט לתוך שדה</td></tr>
+        <tr><td><code>.type('{enter}')</code></td><td class="explain">מקש מיוחד — <code>{tab}</code> <code>{esc}</code> <code>{backspace}</code></td></tr>
+        <tr><td><code>.click()</code></td><td class="explain">לחיצה רגילה</td></tr>
+        <tr><td><code>.dblclick()</code></td><td class="explain">לחיצה כפולה</td></tr>
+        <tr><td><code>.select('value')</code></td><td class="explain">בחירה מ-dropdown (רשימה נפתחת)</td></tr>
+        <tr><td><code>.check()</code> / <code>.uncheck()</code></td><td class="explain">סימון / ביטול checkbox</td></tr>
+        <tr><td><code>.clear()</code></td><td class="explain">ניקוי תוכן שדה input</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 6. ASSERTIONS ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">6</div>
+    <h2>בדיקות (Assertions)</h2>
+  </div>
+  <div class="desc">שני סוגים: <code>.should()</code> לאלמנטים ב-DOM, ו-<code>expect()</code> לערכים ומשתנים.</div>
+
+  <h3 style="color:var(--accent);font-size:1rem;margin:16px 0 10px;font-weight:600;">should — בדיקות על אלמנטים</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>בדיקה</th><th>משמעות</th></tr></thead>
+      <tbody>
+        <tr><td><code>.should('be.visible')</code></td><td class="explain">האלמנט נראה על המסך</td></tr>
+        <tr><td><code>.should('not.exist')</code></td><td class="explain">האלמנט לא קיים ב-DOM</td></tr>
+        <tr><td><code>.should('contain', 'text')</code></td><td class="explain">מכיל טקסט מסוים (חלקי)</td></tr>
+        <tr><td><code>.should('have.text', 'text')</code></td><td class="explain">התאמת טקסט מדויקת</td></tr>
+        <tr><td><code>.should('have.value', 'val')</code></td><td class="explain">ערך של שדה input</td></tr>
+        <tr><td><code>.should('have.length', 5)</code></td><td class="explain">כמות אלמנטים שנמצאו</td></tr>
+        <tr><td><code>.should('have.class', 'active')</code></td><td class="explain">לאלמנט יש class מסוים</td></tr>
+        <tr><td><code>.should('have.attr', 'href', '/x')</code></td><td class="explain">לאלמנט יש attribute מסוים</td></tr>
+        <tr><td><code>.should('be.disabled')</code></td><td class="explain">האלמנט מנוטרל (disabled)</td></tr>
+        <tr><td><code>.and('be.visible')</code></td><td class="explain">שרשור — בדיקה נוספת באותה שורה</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="color:var(--accent);font-size:1rem;margin:16px 0 10px;font-weight:600;">expect — בדיקות על ערכים (API / משתנים)</h3>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>בדיקה</th><th>משמעות</th></tr></thead>
+      <tbody>
+        <tr><td><code>expect(x).to.eq(200)</code></td><td class="explain">שווה בדיוק</td></tr>
+        <tr><td><code>expect(x).to.be.an('array')</code></td><td class="explain">בדיקת טיפוס — מערך</td></tr>
+        <tr><td><code>expect(x).to.have.length(100)</code></td><td class="explain">אורך מערך</td></tr>
+        <tr><td><code>expect(x).to.have.property('id', 1)</code></td><td class="explain">יש שדה עם ערך ספציפי</td></tr>
+        <tr><td><code>expect(x).to.include(obj)</code></td><td class="explain">מכיל אובייקט</td></tr>
+        <tr><td><code>expect(x).to.be.lessThan(2000)</code></td><td class="explain">קטן מ-</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 7. API TESTING ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">7</div>
+    <h2>בדיקות API — <code>cy.request()</code></h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>מתודה</th><th>תחביר</th><th>סטטוס הצלחה</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET</code></td><td><code>cy.request(url)</code></td><td class="explain">200</td></tr>
+        <tr><td><code>POST</code></td><td><code>cy.request('POST', url, body)</code></td><td class="explain">201</td></tr>
+        <tr><td><code>PUT</code></td><td><code>cy.request('PUT', url, body)</code></td><td class="explain">200</td></tr>
+        <tr><td><code>DELETE</code></td><td><code>cy.request('DELETE', url)</code></td><td class="explain">200</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="highlight">
+    <strong>failOnStatusCode: false</strong> — מאפשר לבדוק תגובות שגיאה (404, 500) בלי שהבדיקה תיכשל אוטומטית.
+  </div>
+</div>
+
+<!-- ===== 8. INTERCEPT ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">8</div>
+    <h2>יירוט בקשות — <code>cy.intercept()</code></h2>
+  </div>
+  <div class="desc">מאפשר ליירט בקשות רשת, להחזיר תשובות מזויפות, ולחכות לסיום בקשות.</div>
+  <div class="card-grid">
+    <div class="card">
+      <h4>המתנה לבקשה</h4>
+      <p><code>cy.intercept('GET', '/api/users').as('getUsers')</code><br>ואז: <code>cy.wait('@getUsers')</code><br>מחכה שהבקשה תסתיים לפני שממשיכים.</p>
+    </div>
+    <div class="card">
+      <h4>Mock — תשובה מזויפת</h4>
+      <p><code>cy.intercept('GET', '/api/users', { statusCode: 200, body: [...] })</code><br>מחזיר תשובה שאתה שולט בה — בלי שרת אמיתי.</p>
+    </div>
+    <div class="card">
+      <h4>סימולציית שגיאה</h4>
+      <p><code>cy.intercept('GET', '/api/users', { statusCode: 500 })</code><br>בודק איך האפליקציה מתנהגת כשהשרת קורס.</p>
+    </div>
+    <div class="card">
+      <h4>Fixture — מקובץ JSON</h4>
+      <p><code>cy.intercept('GET', '/api/users', { fixture: 'users.json' })</code><br>טוען תשובה מקובץ <code>cypress/fixtures</code> — נקי וקריא.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 9. SUPPORT FILES ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">9</div>
+    <h2>קבצי תמיכה</h2>
+  </div>
+  <div class="card-grid">
+    <div class="card">
+      <h4>Fixtures</h4>
+      <p>קבצי JSON עם נתוני בדיקה.<br><code>cy.fixture('users.json')</code><br>מאפשר להפריד data מ-logic.</p>
+    </div>
+    <div class="card">
+      <h4>Custom Commands</h4>
+      <p>פקודות מותאמות שמונעות חזרתיות.<br><code>Cypress.Commands.add('login', ...)</code><br>שימוש: <code>cy.login(email, pass)</code></p>
+    </div>
+    <div class="card">
+      <h4>e2e.js</h4>
+      <p>קובץ הגדרות גלובלי — רץ לפני כל בדיקה.<br>מתאים ל: <code>cy.clearCookies()</code>, import commands, הגדרות משותפות.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 10. CONFIG ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">10</div>
+    <h2>הגדרות — <code>cypress.config.js</code></h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>הגדרה</th><th>תיאור</th></tr></thead>
+      <tbody>
+        <tr><td><code>baseUrl</code></td><td class="explain">כתובת בסיס — לא צריך לכתוב URL מלא ב-<code>cy.visit()</code></td></tr>
+        <tr><td><code>defaultCommandTimeout</code></td><td class="explain">זמן המתנה לאלמנט (ברירת מחדל: 4s)</td></tr>
+        <tr><td><code>pageLoadTimeout</code></td><td class="explain">זמן המתנה לטעינת דף (ברירת מחדל: 60s)</td></tr>
+        <tr><td><code>video</code></td><td class="explain">הקלטת וידאו של ריצת הבדיקות</td></tr>
+        <tr><td><code>screenshotOnRunFailure</code></td><td class="explain">צילום מסך אוטומטי בכישלון</td></tr>
+        <tr><td><code>viewportWidth / Height</code></td><td class="explain">גודל חלון הדפדפן בבדיקה</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 11. RUNNING ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">11</div>
+    <h2>הרצת בדיקות</h2>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>פקודה</th><th>מתי</th></tr></thead>
+      <tbody>
+        <tr><td><code>npm run cy:open</code></td><td class="explain">GUI — פותח דפדפן, מתאים לפיתוח ו-debug</td></tr>
+        <tr><td><code>npm run cy:run</code></td><td class="explain">CLI — ריצה מהירה ברקע (headless)</td></tr>
+        <tr><td><code>npm run cy:run:chrome</code></td><td class="explain">CLI ספציפית לדפדפן Chrome</td></tr>
+        <tr><td><code>npm run cy:run:api</code></td><td class="explain">ריצה של בדיקות API בלבד</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ===== 12. BEST PRACTICES ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">12</div>
+    <h2>Best Practices — 7 כללי זהב</h2>
+  </div>
+  <div class="rules-grid">
+    <div class="rule">
+      <div class="rule-num">1</div>
+      <div class="rule-text">
+        <h4>השתמש ב-data-cy</h4>
+        <p>סלקטורים שלא נשברים כשהעיצוב משתנה.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">2</div>
+      <div class="rule-text">
+        <h4>cy.wait('@req') ולא cy.wait(ms)</h4>
+        <p>חכה לאירוע אמיתי, לא לשעון. יציב ומהיר יותר.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">3</div>
+      <div class="rule-text">
+        <h4>Login דרך API</h4>
+        <p>אל תעבור UI בכל בדיקה — <code>cy.request()</code> מהיר פי 10.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">4</div>
+      <div class="rule-text">
+        <h4>דבר אחד לכל בדיקה</h4>
+        <p>אם נשבר — תדע בדיוק מה. כל <code>it()</code> = בדיקה ממוקדת.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">5</div>
+      <div class="rule-text">
+        <h4>בדיקה עצמאית</h4>
+        <p>כל בדיקה רצה לבד — לא תלויה בתוצאות של בדיקה אחרת.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">6</div>
+      <div class="rule-text">
+        <h4>Custom Commands</h4>
+        <p>DRY — אל תחזור על אותו קוד. חלץ ל-commands.js.</p>
+      </div>
+    </div>
+    <div class="rule">
+      <div class="rule-num">7</div>
+      <div class="rule-text">
+        <h4>אל תבדוק אתרים חיצוניים</h4>
+        <p>רק את האפליקציה שלך. אתרים אחרים ישברו את הבדיקות.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 13. CI/CD ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">13</div>
+    <h2>CI/CD — GitHub Actions</h2>
+  </div>
+  <div class="flow">
+    <span class="step">git push</span>
+    <span class="arrow-flow">→</span>
+    <span class="step">Clone Repo</span>
+    <span class="arrow-flow">→</span>
+    <span class="step">Install Deps</span>
+    <span class="arrow-flow">→</span>
+    <span class="step">Start App</span>
+    <span class="arrow-flow">→</span>
+    <span class="step">Run Tests</span>
+    <span class="arrow-flow">→</span>
+    <span class="pass">✅ Pass</span> / <span class="fail">❌ Fail + Screenshots</span>
+  </div>
+</div>
+
+<!-- ===== 14. PROJECT STRUCTURE ===== -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-num">14</div>
+    <h2>מבנה פרויקט</h2>
+  </div>
+  <div class="tree">
+<span class="folder">project/</span>
+├── <span class="folder">.github/workflows/</span>
+│   └── <span class="file">cypress.yml</span>              <span class="note">← CI/CD pipeline</span>
+├── <span class="folder">cypress/</span>
+│   ├── <span class="folder">e2e/</span>                     <span class="note">← קבצי הבדיקות (.cy.js)</span>
+│   ├── <span class="folder">fixtures/</span>                <span class="note">← נתוני בדיקה (JSON)</span>
+│   └── <span class="folder">support/</span>
+│       ├── <span class="file">commands.js</span>            <span class="note">← פקודות מותאמות</span>
+│       └── <span class="file">e2e.js</span>                 <span class="note">← הגדרות גלובליות</span>
+├── <span class="file">cypress.config.js</span>              <span class="note">← הגדרות Cypress</span>
+└── <span class="file">package.json</span>                   <span class="note">← scripts להרצה</span>
+  </div>
+</div>
+
+</div><!-- /container -->
+</body>
+</html>
