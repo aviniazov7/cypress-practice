@@ -1,0 +1,45 @@
+name: Cypress Tests
+
+# מתי להריץ: בכל push ל-main, או ב-pull request
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+    steps:
+      # שלב 1: מביא את הקוד מהריפו
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # שלב 2: מתקין Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # שלב 3: מתקין dependencies ומריץ Cypress
+      - name: Cypress run
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+
+      # שלב 4: שומר צילומי מסך אם בדיקה נכשלה
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+
+      # שלב 5: שומר וידאו של הריצה
+      - name: Upload videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos

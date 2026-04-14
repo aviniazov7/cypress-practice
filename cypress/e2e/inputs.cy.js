@@ -18,7 +18,7 @@ describe('Inputs Page', () => {
   // מקשים מיוחדים: חצים למעלה ולמטה
   it('should use arrow keys to increment and decrement', () => {
     cy.get('input[type="number"]').type('10');
-    cy.get('input[type="number"]').type('{uparrow}').should('have.value', '11');
+    cy.get('input[type="number"]').type('{uparrow}').should('have.value', '11');  
     cy.get('input[type="number"]').type('{downarrow}').should('have.value', '10');
   });
 
