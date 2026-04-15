@@ -6,7 +6,9 @@
   "scripts": {
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:run:chrome": "cypress run --browser chrome"
+    "cy:run:chrome": "cypress run --browser chrome",
+    "cy:run:dev": "cypress run --env configFile=dev",
+    "cy:run:staging": "cypress run --env configFile=staging"
   },
   "keywords": [],
   "author": "",

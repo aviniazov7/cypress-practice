@@ -1,0 +1,9 @@
+{
+  "baseUrl": "https://the-internet.herokuapp.com",
+  "env": {
+    "apiUrl": "https://jsonplaceholder.typicode.com",
+    "username": "tomsmith",
+    "password": "SuperSecretPassword!",
+    "environment": "dev"
+  }
+}

@@ -20,7 +20,7 @@ describe('Login Page', () => {
     cy.get('.flash.success').should('be.visible')
       .and('contain', 'You logged into a secure area!');
     cy.get('a[href="/logout"]').should('be.visible');
-  });
+  }); 
 
   // שם משתמש שגוי
   it('should show error for invalid username', () => {
